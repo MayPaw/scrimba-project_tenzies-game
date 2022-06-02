@@ -7,9 +7,10 @@ import {nanoid} from 'nanoid'
 function App() {
   const [diceArray, setDiceArray] = React.useState(generateDiceArray())
   const [tenzies, setTenzies] = React.useState(false)
-  const [count, setCount] = React.useState(0)
-  const [timer, setTimer] = React.useState("0:00")
-
+  const [count, setCount] = React.useState(1)
+  const [timer, setTimer] = React.useState(0)
+  const [timeDisplay, setTimeDisplay] = React.useState("00:00:00")
+ 
   useEffect(() => {
       let isHeldCount = 0
       let sum = 0
@@ -21,8 +22,39 @@ function App() {
           && isHeldCount === diceArray.length){
           setTenzies(true)
         } else {setTenzies(false)}
+
+        console.log("useEffect holding die")
       }
+
+      
   },[diceArray])
+
+  useEffect(() => {
+    let intervalId
+    if(timer === 0 && !tenzies) {
+      intervalId = setInterval(() => setTimer(prevTime => prevTime+1), 1000)
+    }
+    console.log("useEffect interval")
+    return () => clearInterval(intervalId)
+
+  }, [tenzies])
+
+  useEffect(() => {
+    const time = {
+      hours: Math.floor(timer/3600),
+      minutes: Math.floor(timer/60),
+      seconds: timer % 60
+    }
+  
+  for (const key in time) {
+    if(time[key] < 10) {
+      time[key] = `0${time[key]}`
+    }
+  }
+  console.log("useEffect timeDisplay")
+    setTimeDisplay(`${time.hours}:${time.minutes}:${time.seconds}`)
+  }, [timer])
+
 
   function generateDice() {
     return {
@@ -50,11 +82,16 @@ function App() {
   }
   
   function rollDice() {
-    setCount(prevCount => prevCount+1)
-    tenzies ? setDiceArray(generateDiceArray) :
-    setDiceArray(oldArray => oldArray.map(die => {
-      return die.isHeld ? die : generateDice()
-    }))
+    if(tenzies) {
+      setTimer(0)
+      setCount(1)
+      setDiceArray(generateDiceArray)
+    } else {
+      setCount(prevCount => prevCount+1)
+      setDiceArray(oldArray => oldArray.map(die => {
+        return die.isHeld ? die : generateDice()
+      }))
+    }
   }
 
   function holdDie(id){
@@ -68,7 +105,7 @@ function App() {
   
   return (
     <main>
-      <Header tenzies = {tenzies} count = {count} timer = {timer}/>
+    <Header tenzies = {tenzies} count = {count} timer = {timeDisplay}/>
         <div className = "dice-container">
           {displayDice()}
         </div>
