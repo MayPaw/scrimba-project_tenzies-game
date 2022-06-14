@@ -1,29 +1,32 @@
 import {useEffect, useState} from 'react'
 
-function useTimer (rollCount, hasWon) {
-    const [timer, setTimer] = useState(0)
-    const [timeDisplay, setTimeDisplay] = useState("00:00:00")
+function useTimer (hasWon) {
+    const [timePassed, setTimePassed] = useState(0)
+    const [timer, setTimer] = useState("00:00:00")
+    const [isRunning, setIsRunning] = useState(false)
 
   // starts a setInterval when conditions are met, clears it when hasWon updates
     useEffect(() => {
         let intervalId
-        if(timer === 0 && !hasWon) {
+        if(!hasWon && !isRunning) {
           intervalId = setInterval(() => {
-            console.log(timer)
-            console.log(intervalId)
-            return setTimer(prevTime => prevTime+1)}, 1000)
+            setIsRunning(true)
+            return setTimePassed(prevTime => prevTime+1)}, 1000)
         }
   
-        return () => clearInterval(intervalId)
+        return () => {
+          clearInterval(intervalId)
+          setIsRunning(false)
+        }
      
       }, [hasWon])
 
     //updates timeDisplay state every time the timer updates
     useEffect(() => {
         const time = {
-          hours: Math.floor(timer/3600),
-          minutes: Math.floor(timer/60),
-          seconds: timer % 60
+          hours: Math.floor(timePassed/3600),
+          minutes: Math.floor(timePassed % 3600 / 60),
+          seconds: timePassed % 60
         }
       
       for (const key in time) {
@@ -31,17 +34,18 @@ function useTimer (rollCount, hasWon) {
           time[key] = `0${time[key]}`
         }
       }
-        setTimeDisplay(`${time.hours}:${time.minutes}:${time.seconds}`)
-    }, [timer])
+        setTimer(`${time.hours}:${time.minutes}:${time.seconds}`)
+    }, [timePassed])
 
     
-    useEffect (() =>{
-        if( rollCount === 1) {
-            setTimer(0)
-        }
-    },[rollCount])
+  function resetTimer(rollCount) {
+    if( rollCount === 1) {
+        setTimePassed(0)
+    }
+  }
 
-    return timeDisplay
+
+    return [timer, resetTimer]
 }
 
 export default useTimer

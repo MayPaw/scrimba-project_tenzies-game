@@ -7,6 +7,7 @@ function GameBoard() {
 	const [hasWon, setHasWon] = useState(false)
 	const [rollCount, setRollCount] = useState(1)
 	const [diceArray, setDiceArray] = useState(generateDiceArray())
+	const [timer, resetTimer] = useTimer(hasWon)
 
 	// checks if number of held dice matches the number of all dice displayed
 	// if so, changes state of hasWon to true
@@ -27,6 +28,12 @@ function GameBoard() {
 			}
 		}
 	}, [diceArray])
+
+	//resets timer at rollCount === 1
+	useEffect(() => {
+		resetTimer(rollCount)
+	}, [rollCount])
+
 
 	function generateDice() {
 		return {
@@ -88,7 +95,7 @@ function GameBoard() {
 		<main className = "board">
 				<h1 className = "board__title">Tenzies</h1>
 				<p className = "board__text board__text--roll-count"> roll count: {rollCount}</p>
-				<p className = "board__text board__text--timer"> timer: {useTimer(rollCount, hasWon)}</p>
+				<p className = "board__text board__text--timer"> timer: {timer}</p>
 
 				{hasWon? <p className="board__text status">
 						Congratulations! You have won the game!
