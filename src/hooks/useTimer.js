@@ -1,21 +1,22 @@
 import {useEffect, useState} from 'react'
 
-function useTimer (count, tenzies) {
+function useTimer (rollCount, hasWon) {
     const [timer, setTimer] = useState(0)
     const [timeDisplay, setTimeDisplay] = useState("00:00:00")
 
-  // starts a setInterval when conditions are met, clears it when tenzies update
+  // starts a setInterval when conditions are met, clears it when hasWon updates
     useEffect(() => {
         let intervalId
-        if(timer === 0 && !tenzies) {
+        if(timer === 0 && !hasWon) {
           intervalId = setInterval(() => {
             console.log(timer)
+            console.log(intervalId)
             return setTimer(prevTime => prevTime+1)}, 1000)
         }
   
         return () => clearInterval(intervalId)
      
-      }, [tenzies])
+      }, [hasWon])
 
     //updates timeDisplay state every time the timer updates
     useEffect(() => {
@@ -35,10 +36,10 @@ function useTimer (count, tenzies) {
 
     
     useEffect (() =>{
-        if( count === 1) {
+        if( rollCount === 1) {
             setTimer(0)
         }
-    },[count])
+    },[rollCount])
 
     return timeDisplay
 }

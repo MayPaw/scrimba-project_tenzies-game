@@ -1,6 +1,10 @@
 import React from "react"
 
 function GameIntro({ setHasStarted }) {
+	function startGame () {
+		setHasStarted(true)
+	}
+
 	return (
 		<main className = "board">
 				<h1 className = "board__title"> Welcome to Tenzies!</h1>
@@ -10,7 +14,7 @@ function GameIntro({ setHasStarted }) {
 					<br /> In order to start the game, click 'Start Game' button.
 					<br /> To quit, close the page.
 				</p>
-			<button className = "board__btn" onClick={() => setHasStarted(true)}>
+			<button className = "board__btn" onClick={startGame}>
 				Start Game
 			</button>
 		</main>
