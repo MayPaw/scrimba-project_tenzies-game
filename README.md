@@ -1,5 +1,5 @@
 # Scrimba Project: Tenzies Game
-The repository contains a project from Scrimba's "The Frontend Developer Carrier Path" course - Tenzies Game.<br>
+The repository contains a project from Scrimba's "The Frontend Developer Career Path" course - Tenzies Game.<br>
 The app was created with Create React App.
 
 The goal of the project was to create a simple Tenzies Game as a SPA with React.
